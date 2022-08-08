@@ -61,5 +61,5 @@ for size in sizes:
         htmlFile.write('<link rel="apple-touch-startup-image" media="(device-width: %ipx) and (device-height: %ipx) and (-webkit-device-pixel-ratio: 2)" href="%s%s">\n'%(size[0]/2,size[1]/2,serverImagesPath,imageFname))
     if int(size[0]/3)*3 == size[0] and int(size[1]/3)*3 == size[1]:
         htmlFile.write('<link rel="apple-touch-startup-image" media="(device-width: %ipx) and (device-height: %ipx) and (-webkit-device-pixel-ratio: 2)" href="%s%s">\n'%(size[0]/3,size[1]/3,serverImagesPath,imageFname))
-        
+htmlFile.write('<meta name="apple-mobile-web-app-capable" content="yes"> \n')     
 manifestFile.write(']\n')
