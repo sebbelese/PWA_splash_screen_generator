@@ -50,11 +50,19 @@ for size in sizes:
     imageFname = "splash_%ix%i.png"%(size[0],size[1])
     finalImage.save(os.path.join(outputFolder, imageFname))
     
-    manifestFile.write('\t{\n')
-    manifestFile.write('\t\t"src": '+serverImagesPath+imageFname+'\n')
-    manifestFile.write('\t\t"type": "image/png"\n')
-    manifestFile.write('\t\t"sizes": "%ix%i"\n'%(size[0],size[1]))
-    manifestFile.write('\t},\n')
+    def manifestLine(pixelRatio):
+        if int(size[0]/pixelRatio)*pixelRatio == size[0] and int(size[1]/pixelRatio)*pixelRatio == size[1]:
+            manifestFile.write('\t{\n')
+            manifestFile.write('\t\t"src": "'+serverImagesPath+imageFname+'",\n')
+            manifestFile.write('\t\t"media": "(device-width: %ipx) and (device-height: %ipx) and (-webkit-device-pixel-ratio: %i)",\n'%(size[0],size[1],pixelRatio))
+            manifestFile.write('\t\t"type": "image/png",\n')
+            manifestFile.write('\t\t"sizes": "%ix%i",\n'%(size[0],size[1]))
+            manifestFile.write('\t},\n')
+    
+    # We should probably limit these
+    manifestLine(1)
+    manifestLine(2)
+    manifestLine(3)
     
     htmlFile.write('<link rel="apple-touch-startup-image" media="(device-width: %ipx) and (device-height: %ipx) and (-webkit-device-pixel-ratio: 1)" href="%s%s">\n'%(size[0],size[1],serverImagesPath,imageFname))
     if int(size[0]/2)*2 == size[0] and int(size[1]/2)*2 == size[1]:
