@@ -8,11 +8,12 @@ import os
 forceIntegerScaling = True 
 # Percentage of the image dimensions reserved for the borders, to avoid the image touching the borders of the screen
 minPercentageBorders = 10 
-
+# Original image to be placed on the splash screen
 inputSplash = "splash.png"
-
+# Local folder where to place the splash screens
 outputFolder = "resized"
-serverImagesPath = "static/images/"
+#Location on server where will be served the images
+serverImagesPath = "static/images/splash/"
 
 try:
     os.makedirs(outputFolder) 
@@ -28,8 +29,11 @@ sizes = sizes + [(size[1], size[0]) for size in sizes]
 inputImg = Image.open(inputSplash)
 inputWidth, inputHeight = inputImg.size
 
-manifestFile = open(os.path.join(outputFolder, "manifest.js"),"w")
+manifestFile = open(os.path.join(outputFolder, "splash.json"),"w")
 manifestFile.write('[\n') 
+
+htmlFile = open(os.path.join(outputFolder, "splash.html"),"w")
+
 
 for size in sizes:
     
@@ -51,5 +55,11 @@ for size in sizes:
     manifestFile.write('\t\t"type": "image/png"\n')
     manifestFile.write('\t\t"sizes": "%ix%i"\n'%(size[0],size[1]))
     manifestFile.write('\t},\n')
+    
+    htmlFile.write('<link rel="apple-touch-startup-image" media="(device-width: %ipx) and (device-height: %ipx) and (-webkit-device-pixel-ratio: 1)" href="%s%s">\n'%(size[0],size[1],serverImagesPath,imageFname))
+    if int(size[0]/2)*2 == size[0] and int(size[1]/2)*2 == size[1]:
+        htmlFile.write('<link rel="apple-touch-startup-image" media="(device-width: %ipx) and (device-height: %ipx) and (-webkit-device-pixel-ratio: 2)" href="%s%s">\n'%(size[0]/2,size[1]/2,serverImagesPath,imageFname))
+    if int(size[0]/3)*3 == size[0] and int(size[1]/3)*3 == size[1]:
+        htmlFile.write('<link rel="apple-touch-startup-image" media="(device-width: %ipx) and (device-height: %ipx) and (-webkit-device-pixel-ratio: 2)" href="%s%s">\n'%(size[0]/3,size[1]/3,serverImagesPath,imageFname))
+        
 manifestFile.write(']\n')
-manifestFile.close()
